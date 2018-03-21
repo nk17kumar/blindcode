@@ -1,3 +1,5 @@
+import os
+
 class writer:
 
     @staticmethod
@@ -11,7 +13,9 @@ class writer:
             ext = "java"
         if lang == "c":
             ext = "c"
-        filename = "resources/code." + ext
+        filename = os.path.abspath("..") + "/resources/code." + ext
         fin = open(filename,"w")
         fin.write(code)
         fin.close()
+
+writer.write_code("python","print 2")
