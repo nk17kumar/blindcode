@@ -11,7 +11,7 @@ class writer:
             ext = "java"
         if lang == "c":
             ext = "c"
-        filename = "code." + ext
+        filename = "resources/code." + ext
         fin = open(filename,"w")
         fin.write(code)
         fin.close()
