@@ -48,5 +48,12 @@ class Operation:
         else:
             return False
 
+    @staticmethod
+    def show_compilation_err():
+        p = Operation.path
+        err = open(p+"/err.txt","r")
+        errors = err.read()
+        print errors
+        
 print Operation.run_compiler("python")
 print Operation.check_ac()
