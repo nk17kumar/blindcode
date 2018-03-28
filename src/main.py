@@ -11,15 +11,15 @@ print "Enter $ to exit, start your code you have 300 seconds to complete : "
 code=hidden.blind_string(user)
 writer.write_code(lang,code)
 compiled=Operation.run_compiler(lang)
+print ""
 if compiled == True :
-	print "code compiled succesfully"
 	AC = Operation.check_ac()
 	AC += 10
 	if AC != 10.0 :
-		print "code Accepted"
+		print "Compiled and accepted"
 		user.set_status("Compiled and accepted")
 	else :
-		print "Wrong Answer"
+		print "compiled - Wrong Answer"
 		user.set_status("compiled - Wrong Answer")
 	print "score : %.2f " %(AC)
 else :
