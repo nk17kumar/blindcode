@@ -1,3 +1,5 @@
+import time
+
 class User:
     'Common base class for all employees'
     __status = "Not defined"
@@ -8,7 +10,7 @@ class User:
     	self.language = language
 
     def __str__(self):
-        return "User Name: " + self.name + "\n" + "Roll Number: " + str(self.roll_no) + "\n" + "Language: " + self.language
+        return "User Name: " + self.name + "\n" + "Roll Number: " + str(self.roll_no) + "\n" + "Language: " + self.language + "\n" + "status: " + self.__status + "\n" + "Time Taken: " + str(self.__time) + " seconds"
 
     def get_time(self):
        return self.__time
