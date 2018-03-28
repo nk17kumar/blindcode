@@ -17,5 +17,4 @@ class writer:
         fin = open(filename,"w")
         fin.write(code)
         fin.close()
-
-writer.write_code("python","print 2")
+        

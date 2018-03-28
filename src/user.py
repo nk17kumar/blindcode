@@ -21,3 +21,4 @@ class User:
 
     def set_status(self, status_after):
         self.__status =  status_after
+
