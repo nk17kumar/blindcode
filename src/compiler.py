@@ -12,6 +12,7 @@ class Operation:
         out = open(p+"/out.txt","w")
         err = open(p+"/err.txt","w")
         fin = open(p +"/in.txt","r")
+        rerr = open(p+ "/rerr.txt","w")
         err.flush()
         p1 = p + "/code"
         if lang == "python":
@@ -20,25 +21,30 @@ class Operation:
         if lang == "c++":
             path1 = p + "/code.cpp"
             sr = subprocess.call(["g++",path1,"-o",p1],stderr=err)
-            sr = subprocess.call([p1],stdout=out,stderr=err,stdin=fin)
+            sr = subprocess.call([p1],stdout=out,stderr=rerr,stdin=fin)
         if lang == "java":
             path1 = p + "/code.java"
             sr = subprocess.call(["javac",path1],stderr=err)
-            sr = subprocess.call(["java","-cp",p,"code"],stdout=out,stderr=err,stdin=fin)
+            sr = subprocess.call(["java","-cp",p,"code"],stdout=out,stderr=rerr,stdin=fin)
         if lang == "c":
             path1 = p + "/code.c"
             sr = subprocess.call(["g++",path1,"-o",p1],stderr=err)
-            sr = subprocess.call([p1],stdout=out,stderr=err,stdin=fin)
+            sr = subprocess.call([p1],stdout=out,stderr=rerr,stdin=fin)
         out.close()
         err.close()
         fin.close()
+        rerr.close()
+        rerr = open(p+"/rerr.txt","r")
         err = open(p+"/err.txt","r")
         compiling_err = ""
         compiling_err = err.read()
-        if compiling_err == "":
-            return True
-        else:
-            return False
+        run_err = ""
+        run_err = rerr.read()
+        if compiling_err == "" and run_err == "":
+            return "no_err"
+        if run_err == "" :
+            return "cm_err"
+        return "rn_err"
 
     @staticmethod
     def check_ac():
@@ -53,17 +59,23 @@ class Operation:
         #     return False
         count = 0
         total = 0
-        for line1 in f1 :
-            if line1 == f2.readline() :
-                count+=1
+        for line1 in f2 :
             total+=1
+            if line1 == f1.readline() :
+                count+=1
+                print "testcase %d : Accepted" %(total)
+            else :
+                print "testcase %d : Wrong Answer" %(total)
         score = 100*(float(count)/total)
         return score
 
     @staticmethod
-    def show_compilation_err():
+    def show_compilation_err(compiled):
         p = Operation.path
-        err = open(p+"/err.txt","r")
+        if compiled == "cm_err" :
+            err = open(p+"/err.txt","r")
+        else :
+            err = open(p+"/rerr.txt","r")
         errors = err.read()
         print errors
         
