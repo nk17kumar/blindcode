@@ -9,7 +9,7 @@ class hidden:
     def blind_string(user):
         passwor = ''
         text = ''
-        start_time = int(time.time())
+        start_time = int(time.time()) - user.get_time()
         time_now = int(time.time())-start_time
         while time_now <= 300 :
             x = getch.getch()
