@@ -4,11 +4,22 @@ from writer import *
 from compiler import *
 import subprocess
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+
+credentials = ServiceAccountCredentials.from_json_keyfile_name('BlindCode-6a1c6b8f83f7.json', scope)
+
+gc = gspread.authorize(credentials)
+
+wks = gc.open("BlindCode").sheet1
+reg_no = raw_input("Enter Regestration No : ")
 name=raw_input("Enter Name : ")
 roll_no=raw_input("Enter Roll number : ")
 lang=raw_input("Enter Prefered Language : ")
-user=User(name,roll_no,lang)
+user=User(reg_no,name,roll_no,lang)
 time_left = 300
 path = os.path.abspath("../resources")
 path = path + "/code."
@@ -64,4 +75,16 @@ while time_left > 0 :
 	if loop == 'N' or loop == 'n' :
 		break
 	sr = subprocess.call(["clear"])
+cells = "A" + str(int(reg_no)+1) + ":G" + str(int(reg_no)+1)
+cell_list = wks.range(cells)
+# # Update values
+cell_list[0].value = reg_no
+cell_list[1].value = name
+cell_list[2].value = roll_no
+cell_list[3].value = lang
+cell_list[4].value = user.get_status()
+cell_list[5].value = user.get_time()
+cell_list[6].value = user.get_score()
+# Send update in batch mode
+wks.update_cells(cell_list)
 print user
