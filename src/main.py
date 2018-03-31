@@ -1,44 +1,33 @@
+import subprocess
+import os
+
+class project_path:
+
+	__path = "/home/csevirus/project/blindcode/src"
+
+	@staticmethod
+	def set_path(path):
+		project_path.__path = path
+
+	@staticmethod
+	def get_path():
+		return project_path.__path
+
+path = project_path.get_path()
+os.chdir(path)
+
 from user import *
 from hidden import *
 from writer import *
 from compiler import *
-import subprocess
-import os
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
-
-credentials = ServiceAccountCredentials.from_json_keyfile_name('BlindCode-6a1c6b8f83f7.json', scope)
-
-gc = gspread.authorize(credentials)
-
-wks = gc.open("BlindCode").sheet1
-reg_no = raw_input("Enter Regestration No : ")
-name=raw_input("Enter Name : ")
-roll_no=raw_input("Enter Roll number : ")
-lang=raw_input("Enter Prefered Language : ")
-user=User(reg_no,name,roll_no,lang)
-time_left = 300
-path = os.path.abspath("../resources")
-path = path + "/code."
-ext = ""
-if lang == "c" :
-	ext = "c"
-if lang == "c++" :
-	ext = "cpp"
-if lang == "java" :
-	ext = "java"
-if lang == "python" :
-	ext = "py"
-path = path + ext
+user=User()
 sr = subprocess.call(["clear"])
+time_left = 300
 while time_left > 0 :
 	print "Enter $ to exit, start your code you have %d seconds to complete : " %(time_left)
-	code = hidden.blind_string(user)
-	writer.write_code(lang,code)
-	compiled=Operation.run_compiler(lang)
+	writer.write_code(user.get_lang(),hidden.blind_string(user))
+	compiled=Operation.run_compiler(user.get_lang())
 	time_left = 300 - user.get_time()
 	print ""
 	if compiled == "no_err" :
@@ -48,10 +37,10 @@ while time_left > 0 :
 			if time_left > 0 :
 				AC += 0.1*float(time_left)
 			print "Compiled and accepted"
-			user.set_status("Compiled and accepted")
+			user.set_status("Compiled and Accepted")
 		else :
 			print "compiled - Wrong Answer"
-			user.set_status("compiled - Wrong Answer")
+			user.set_status("Compiled - Wrong Answer")
 		print "score : %.2f " %(AC)
 		user.set_score(AC)
 	elif compiled == "cm_err" :
@@ -69,22 +58,12 @@ while time_left > 0 :
 			AC += 0.1*float(time_left)
 		print "score : %.2f " %(AC)
 		user.set_score(AC)
-	sr = subprocess.call(["gedit",path])
+	writer.open_file()
 	print "Time left : %d seconds" %(time_left)
 	loop = raw_input("Want to continue Y/N : ")
+	sr = subprocess.call(["clear"])
 	if loop == 'N' or loop == 'n' :
 		break
-	sr = subprocess.call(["clear"])
-cells = "A" + str(int(reg_no)+1) + ":G" + str(int(reg_no)+1)
-cell_list = wks.range(cells)
-# # Update values
-cell_list[0].value = reg_no
-cell_list[1].value = name
-cell_list[2].value = roll_no
-cell_list[3].value = lang
-cell_list[4].value = user.get_status()
-cell_list[5].value = user.get_time()
-cell_list[6].value = user.get_score()
-# Send update in batch mode
-wks.update_cells(cell_list)
+user.update_data()
 print user
+z = raw_input("Press Any Key then enter to exit")

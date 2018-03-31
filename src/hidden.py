@@ -1,8 +1,6 @@
-import sys
 import getch
 import time
 from user import *
-
 
 class hidden:
     @staticmethod
