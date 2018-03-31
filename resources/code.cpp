@@ -1,2 +1,6 @@
-#include <stdio> 
- using namespace std;
+#include <iostream>
+using namespace std;
+int main()
+{
+cout<<1<<endl;
+}

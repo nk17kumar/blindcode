@@ -1,59 +1,71 @@
 import subprocess
-import sys
 import os
 
 class Operation:
 
-    path = os.path.abspath("../resources")
+    __p = os.path.abspath("..") + "/resources"
 
     @staticmethod
     def run_compiler(lang):
-        p = Operation.path
-        out = open(p+"/out.txt","w")
-        err = open(p+"/err.txt","r+")
-        fin = open(p +"/in.txt","r")
+        out = open(Operation.__p+"/out.txt","w")
+        err = open(Operation.__p+"/err.txt","w")
+        fin = open(Operation.__p+"/in.txt","r")
+        rerr = open(Operation.__p+"/rerr.txt","w")
+        err.flush()
+        p1 = Operation.__p + "/code"
         if lang == "python":
-            path1 = p + "/code.py"
+            path1 = Operation.__p + "/code.py"
             subprocess.call(["python",path1],stdout=out,stderr=err,stdin=fin)
         if lang == "c++":
-            p1 = p + "/code"
-            path1 = p + "/code.py"
-            sr = subprocess.call(["g++",path1,"-o",p1],stdout=out,stderr=err,stdin=fin)
+            path1 = Operation.__p + "/code.cpp"
+            sr = subprocess.call(["g++",path1,"-o",p1],stderr=err)
+            sr = subprocess.call([p1],stdout=out,stderr=rerr,stdin=fin)
         if lang == "java":
-            path1 = p + "/code.java"
-            sr = subprocess.call(["javac",path],stdout=out,stderr=err,stdin=fin)
+            path1 = Operation.__p + "/code.java"
+            sr = subprocess.call(["javac",path1],stderr=err)
+            sr = subprocess.call(["java","-cp",p,"code"],stdout=out,stderr=rerr,stdin=fin)
         if lang == "c":
-            path1 = p + "/code.c"
-            sr = subprocess.call(["g++",path,"-o",p1],stdout=out,stderr=err,stdin=fin)
-
-        if(lang == "java"):
-            sr = subprocess.call(["java",p+"/code"])
-
+            path1 = Operation.__p + "/code.c"
+            sr = subprocess.call(["g++",path1,"-o",p1],stderr=err)
+            sr = subprocess.call([p1],stdout=out,stderr=rerr,stdin=fin)
+        out.close()
+        err.close()
+        fin.close()
+        rerr.close()
+        rerr = open(Operation.__p+"/rerr.txt","r")
+        err = open(Operation.__p+"/err.txt","r")
+        compiling_err = ""
         compiling_err = err.read()
-
-        if compiling_err == "":
-            return True
-        else:
-            return False
+        run_err = ""
+        run_err = rerr.read()
+        if compiling_err == "" and run_err == "":
+            return "no_err"
+        if run_err == "" :
+            return "cm_err"
+        return "rn_err"
 
     @staticmethod
     def check_ac():
-        p = Operation.path
-        f1 = open(p+"/out.txt","r")
-        f2 = open(p+"/output.txt","r")
-        s1 = f1.read().strip()
-        s2 = f2.read().strip()
-        if(s1 == s2):
-            return True
-        else:
-            return False
+        f1 = open(Operation.__p+"/out.txt","r")
+        f2 = open(Operation.__p+"/output.txt","r")
+        count = 0
+        total = 0
+        for line1 in f2 :
+            total+=1
+            if line1 == f1.readline() :
+                count+=1
+                print "testcase %d : Accepted" %(total)
+            else :
+                print "testcase %d : Wrong Answer" %(total)
+        score = 100*(float(count)/total)
+        return score
 
     @staticmethod
-    def show_compilation_err():
-        p = Operation.path
-        err = open(p+"/err.txt","r")
+    def show_compilation_err(compiled):
+        if compiled == "cm_err" :
+            err = open(Operation.__p+"/err.txt","r")
+        else :
+            err = open(Operation.__p+"/rerr.txt","r")
         errors = err.read()
         print errors
         
-print Operation.run_compiler("python")
-print Operation.check_ac()
