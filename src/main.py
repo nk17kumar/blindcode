@@ -2,19 +2,17 @@ import subprocess
 import os
 
 class project_path:
-
-	__path = "/home/csevirus/project/blindcode/src"
-
-	@staticmethod
-	def set_path(path):
-		project_path.__path = path
-
 	@staticmethod
 	def get_path():
-		return project_path.__path
+		os.chdir("/usr/share/applications")
+		file = open("/usr/share/applications/blindcode.desktop","r")
+		path = file.read()
+		s = path.find("/home")
+		e = path.find("/main.py")
+		return path[s:e]
 
 path = project_path.get_path()
-os.chdir(path)
+os.chdir(path)	
 
 from user import *
 from hidden import *
@@ -64,6 +62,7 @@ while time_left > 0 :
 	sr = subprocess.call(["clear"])
 	if loop == 'N' or loop == 'n' :
 		break
+print "processing ........"
 user.update_data()
 print user
-z = raw_input("Press Any Key then enter to exit")
+z = raw_input("Press enter to exit")
