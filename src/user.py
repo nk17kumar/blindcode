@@ -10,6 +10,7 @@ class User:
     __status = "Not defined"
     __time = 0
     __score = 0.0
+    __start_time = 0
     __path = os.path.abspath("..") + "/resources"
 
     def __init__(self):
@@ -26,6 +27,12 @@ class User:
 
     def set_time(self, time_2b_set):
        self.__time =  time_2b_set
+
+    def get_stime(self):
+       return self.__start_time
+
+    def set_stime(self, time_2b_set):
+       self.__start_time =  time_2b_set
 
     def get_score(self) : 
         return self.__score
